@@ -1,0 +1,29 @@
+{
+
+  "name": "BMW EV iDrive",
+
+  "short_name": "iDrive EV",
+
+  "start_url": "./index.html",
+
+  "display": "standalone",
+
+  "background_color": "#000000",
+
+  "theme_color": "#000000",
+
+  "icons": [
+
+    {
+
+      "src": "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg",
+
+      "sizes": "192x192",
+
+      "type": "image/png"
+
+    }
+
+  ]
+
+}
