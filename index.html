@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>EV iDrive</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+
+body {
+
+  margin: 0;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI";
+
+  background: radial-gradient(circle at top, #1a1a1a, #000);
+
+  color: white;
+
+}
+
+/* top bar like iDrive */
+
+.topbar {
+
+  padding: 14px;
+
+  font-size: 14px;
+
+  color: #aaa;
+
+  display: flex;
+
+  justify-content: space-between;
+
+}
+
+/* BMW style container */
+
+.grid {
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 12px;
+
+  padding: 12px;
+
+}
+
+/* tiles */
+
+.tile {
+
+  background: linear-gradient(145deg, #1e1e1e, #0d0d0d);
+
+  border-radius: 18px;
+
+  padding: 14px;
+
+  min-height: 120px;
+
+  box-shadow: 0 0 0 1px #222;
+
+}
+
+.tile h2 {
+
+  font-size: 13px;
+
+  color: #aaa;
+
+  margin: 0;
+
+}
+
+.big {
+
+  font-size: 22px;
+
+  margin-top: 8px;
+
+  color: #4cff9a;
+
+}
+
+/* car image */
+
+.car {
+
+  width: 100%;
+
+  border-radius: 14px;
+
+  margin-top: 10px;
+
+  height: 140px;
+
+  object-fit: cover;
+
+}
+
+/* button */
+
+button {
+
+  width: 100%;
+
+  margin-top: 10px;
+
+  padding: 12px;
+
+  border-radius: 12px;
+
+  border: none;
+
+  background: #1c7cff;
+
+  color: white;
+
+  font-size: 14px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+
+  <div>BMW EV iDrive</div>
+
+  <div id="clock"></div>
+
+</div>
+
+<div class="grid">
+
+  <!-- car tile -->
+
+  <div class="tile">
+
+    <h2>Vehicle</h2>
+
+    <select id="car" onchange="updateCar()">
+
+      <option value="i3">BMW i3 (39 kWh)</option>
+
+      <option value="i4">BMW i4 (69 kWh)</option>
+
+    </select>
+
+    <img id="carImg" class="car"
+
+      src="https://upload.wikimedia.org/wikipedia/commons/3/3e/BMW_i3_front.jpg">
+
+  </div>
+
+  <!-- battery -->
+
+  <div class="tile">
+
+    <h2>Battery</h2>
+
+    <div class="big" id="battery">--%</div>
+
+    <input type="range" id="current" min="0" max="100" value="40"
+
+      oninput="updateBattery()">
+
+  </div>
+
+  <!-- target -->
+
+  <div class="tile">
+
+    <h2>Target</h2>
+
+    <div class="big" id="targetVal">100%</div>
+
+    <input type="range" id="target" min="0" max="100" value="100"
+
+      oninput="updateBattery()">
+
+  </div>
+
+  <!-- cost -->
+
+  <div class="tile">
+
+    <h2>Cost</h2>
+
+    <div class="big" id="cost">£0.00</div>
+
+    <button onclick="calculate()">Calculate</button>
+
+  </div>
+
+</div>
+
+<script>
+
+function updateClock(){
+
+  const d = new Date();
+
+  document.getElementById("clock").innerText =
+
+    d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+}
+
+setInterval(updateClock,1000);
+
+updateClock();
+
+function updateCar(){
+
+  const car = document.getElementById("car").value;
+
+  const img = document.getElementById("carImg");
+
+  img.src = car === "i3"
+
+    ? "https://upload.wikimedia.org/wikipedia/commons/3/3e/BMW_i3_front.jpg"
+
+    : "https://upload.wikimedia.org/wikipedia/commons/2/2d/BMW_i4_Concept_2020.jpg";
+
+}
+
+function updateBattery(){
+
+  document.getElementById("battery").innerText =
+
+    document.getElementById("current").value + "%";
+
+  document.getElementById("targetVal").innerText =
+
+    document.getElementById("target").value + "%";
+
+}
+
+function calculate(){
+
+  const car = document.getElementById("car").value;
+
+  const current = +document.getElementById("current").value;
+
+  const target = +document.getElementById("target").value;
+
+  const price = 0.0349;
+
+  const batterySize = car === "i3" ? 39 : 69;
+
+  if(target <= current){
+
+    document.getElementById("cost").innerText = "Invalid";
+
+    return;
+
+  }
+
+  const kwh = batterySize * ((target - current)/100);
+
+  const cost = kwh * price;
+
+  document.getElementById("cost").innerText =
+
+    "£" + cost.toFixed(2);
+
+}
+
+updateBattery();
+
+updateCar();
+
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+
+  navigator.serviceWorker.register("sw.js");
+
+}
+</script>
+
+</body>
+
+</html>
